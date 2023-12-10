@@ -16,7 +16,7 @@ jobs:
       with:
         java-version: '21'
         distribution: 'adopt'
-        
+
     - name: Build with Maven
       run: mvn -B package --file demo/pom.xml
       
@@ -44,4 +44,4 @@ jobs:
 
     - name: Deploy to AKS
       run: |
-        kubectl set image deployment/<deploymentName> <containerName>=<acrLoginServer>/demo:${{ github.sha }}
+        kubectl set image deployment/demo-deployment demo=wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }}

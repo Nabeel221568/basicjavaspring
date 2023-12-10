@@ -42,6 +42,9 @@ jobs:
         cluster-name: testnabaks
         resource-group: RG-Nab-Spring
 
+    - name: Apply Kubernetes Configuration
+      run: |
+        kubectl apply -f demo/deployment.yaml
     - name: Deploy to AKS
       run: |
         kubectl set image deployment/demo-deployment demo=wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }}

@@ -26,8 +26,8 @@ jobs:
 
     - name: Build and push Docker image to ACR
       run: |
-        docker build -t wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }} .
-        docker push wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }}
+        docker build -t wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }} -f demo/Dockerfile .
+        docker push wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }} 
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v1

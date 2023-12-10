@@ -16,7 +16,10 @@ jobs:
       with:
         java-version: '21'
         distribution: 'adopt'
-
+        
+    - name: Build with Maven
+      run: mvn -B package --file demo/pom.xml
+      
     - name: Login to Azure Container Registry
       uses: azure/docker-login@v1
       with:

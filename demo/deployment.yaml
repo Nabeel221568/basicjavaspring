@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
       - name: demo
-        image: wingtiptoysregistrynab.azurecr.io/demo:latest
+        image: wingtiptoysregistrynab.azurecr.io/demo:latest  # or use the specific tag you push in your GitHub Actions
         ports:
         - containerPort: 8080
-
+      imagePullSecrets:  # Add this section
+      - name: acr-secret
 ---
 apiVersion: v1
 kind: Service

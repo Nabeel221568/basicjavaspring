@@ -24,8 +24,8 @@ jobs:
       uses: azure/docker-login@v1
       with:
         login-server: wingtiptoysregistrynab.azurecr.io
-        username: wingtiptoysregistrynab
-        password: VDgrVj29MRX9UaIjzE8Mb6xgM24pfjkdGKsarSGJN5+ACRDyhw1C
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
 
     - name: Build and push Docker image to ACR
       run: |
@@ -41,7 +41,14 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         cluster-name: testnabaks
         resource-group: RG-Nab-Spring
-
+    - name: Create ACR credentials secret in AKS
+      run: |
+        kubectl create secret docker-registry acr-secret \
+        --docker-server=wingtiptoysregistrynab.azurecr.io \
+        --docker-username=${{ secrets.ACR_USERNAME }} \
+        --docker-password=${{ secrets.ACR_PASSWORD }} \
+        --namespace default \
+        --dry-run=client -o yaml | kubectl apply -f -
     - name: Apply Kubernetes Configuration
       run: |
         kubectl apply -f demo/deployment.yaml

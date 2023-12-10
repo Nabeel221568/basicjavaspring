@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v2
+      with:
+        java-version: '21'
+        distribution: 'adopt'
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: wingtiptoysregistrynab.azurecr.io
+        username: wingtiptoysregistrynab
+        password: VDgrVj29MRX9UaIjzE8Mb6xgM24pfjkdGKsarSGJN5+ACRDyhw1C
+
+    - name: Build and push Docker image to ACR
+      run: |
+        docker build -t wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }} .
+        docker push wingtiptoysregistrynab.azurecr.io/demo:${{ github.sha }}
+
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+
+    - name: Connect to AKS
+      uses: azure/aks-set-context@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        cluster-name: testnabaks
+        resource-group: RG-Nab-Spring
+
+    - name: Deploy to AKS
+      run: |
+        kubectl set image deployment/<deploymentName> <containerName>=<acrLoginServer>/demo:${{ github.sha }}
